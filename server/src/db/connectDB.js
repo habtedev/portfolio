@@ -6,21 +6,17 @@ const connectDB = async () => {
         return;
     }
 
-    if (!process.env.MONGODB_URI) {
+    const uri = process.env.MONGODB_URI;
+    if (!uri) {
         throw new Error('MONGODB_URI is not set');
     }
 
     try {
-        await mongoose.connect(process.env.MONGODB_URI, {
-            // recommended options
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        console.log('Connected to MongoDB');
+        await mongoose.connect(uri);
+        console.log('✅ Connected to MongoDB');
     } catch (error) {
-        console.error('Error connecting to MongoDB:', error);
-        // rethrow so callers can decide whether to exit
-        throw error;
+        console.error('❌ Error connecting to MongoDB:', error);
+        throw error; // let the app crash so Render knows something failed
     }
 };
 
