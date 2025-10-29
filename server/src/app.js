@@ -41,4 +41,12 @@ app.get('/', (req, res) => {
 	res.send('API is running');
 });
 
+// Lightweight health endpoint for platform checks (reports DB status)
+const mongoose = require('mongoose');
+app.get('/healthz', (req, res) => {
+	const readyState = mongoose.connection && mongoose.connection.readyState;
+	// readyState: 0 = disconnected, 1 = connected, 2 = connecting, 3 = disconnecting
+	res.json({ ok: true, dbState: readyState });
+});
+
 module.exports = app;
