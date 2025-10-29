@@ -32,9 +32,13 @@ const Contact = () => {
       const form = e.target as HTMLFormElement;
       const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
 
-      const url = import.meta.env.DEV
-        ? "http://localhost:8500/api/contact"
-        : "/api/contact";
+      // Prefer explicit VITE_API_BASE if provided. Otherwise use localhost in dev
+      // and the Render URL in production. Strip any trailing slash before joining.
+      const API_BASE = (import.meta.env as any).VITE_API_BASE
+        ?? (import.meta.env.DEV ? "http://localhost:8500" : "https://portfolio-9xse.onrender.com");
+
+      const base = String(API_BASE).replace(/\/$/, "");
+      const url = `${base}/api/contact`;
 
       const res = await axios.post(url, data, {
         headers: { "Content-Type": "application/json" },
